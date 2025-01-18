@@ -50,5 +50,11 @@ public class Main {
         System.out.println(createMetods);
 
         System.out.println("__________");
+
+        mainTusk.setStatus(TaskStatus.DONE);
+        System.out.println(manager.updateSubtask(mainTusk));
+        System.out.println(manager.updateEpic(codeStructure));
+        System.out.println(mainTusk);
+        System.out.println(manager.getEpicSubtasks(codeStructure));
     }
 }

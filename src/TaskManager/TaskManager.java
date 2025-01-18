@@ -14,9 +14,6 @@ public class TaskManager {
     private int genId = 0;
 
     public Task createTask(Task task){
-        if (task.getId() > 0){
-            return task;
-        }
 
         int newId = generateId();
         task.setId(newId);
@@ -26,9 +23,6 @@ public class TaskManager {
     }
 
     public Task updateTask(Task task){
-        if (task.getId() == 0){
-            return task;
-        }
 
         if (!tasks.containsKey(task.getId())){
             return task;
@@ -37,7 +31,7 @@ public class TaskManager {
         return task;
     }
 
-    public ArrayList<Task> printAllTasks(){
+    public ArrayList<Task> getAllTasks(){
         return new ArrayList<>(tasks.values());
     }
 
@@ -56,45 +50,24 @@ public class TaskManager {
     ////////////////////////////////////////////
 
     public Epic createEpic(Epic epic){
-        if (epic.getId() > 0){
-            return epic;
-        }
-
         epic.setId(generateId());
         epics.put(epic.getId(), epic);
         return epic;
     }
 
     public Epic updateEpic(Epic epic){
-        if (epic.getId() == 0){
-            return epic;
-        }
 
         if (!epics.containsKey(epic.getId())){
             return epic;
         }
 
-
-        Epic oldEpic = epics.get(epic.getId());
-        ArrayList<SubTask> oldEpicSubtaskList = oldEpic.getSubtuskList();
-        if (!oldEpicSubtaskList.isEmpty()){
-            for (SubTask subs : oldEpicSubtaskList) {
-                subtasks.remove(subs.getId());
-            }
-        }
         epics.replace(epic.getId(), epic);
 
-        ArrayList<SubTask> newEpicSubtaskList = epic.getSubtuskList();
-        if (!newEpicSubtaskList.isEmpty()) {
-            for (SubTask subs : newEpicSubtaskList) {
-                subtasks.put(subs.getId(), subs);
-            }
-        }
         updateEpicStatus(epic);
         return epic;
     }
 
-    public ArrayList<Epic> printAllEpics() {
+    public ArrayList<Epic> getAllEpics() {
         return new ArrayList<>(epics.values());
     }
 
@@ -108,19 +81,16 @@ public class TaskManager {
     }
 
     public void deleteEpicById (int id) {
-        ArrayList<SubTask> epicSubtusks = epics.get(id).getSubtuskList();
+        ArrayList<Integer> ids = epics.get(id).getSubtuskIds();
         epics.remove(id);
-        for (SubTask subtusk: epicSubtusks) {
-            subtasks.remove(subtusk.getId());
+        for (Integer subid: ids) {
+            subtasks.remove(subid);
         }
     }
 
     //////////////////////////////////////////////
 
     public SubTask createSubtusk(SubTask subTask) {
-        if (subTask.getId() > 0) {
-            return subTask;
-        }
 
         if (subTask.getEpicId() == 0){
             return subTask;
@@ -135,16 +105,12 @@ public class TaskManager {
         subtasks.put(subTask.getId(), subTask);
 
         Epic epic = epics.get(subTask.getEpicId());
-        epic.addSubtuskList(subTask);
         epic.getSubtuskIds().add(newId);
         updateEpicStatus(epic);
         return subTask;
     }
 
     public SubTask updateSubtask(SubTask subTask){
-        if (subTask.getId() > 0) {
-            return subTask;
-        }
 
         if (subTask.getEpicId() == 0){
             return subTask;
@@ -156,27 +122,29 @@ public class TaskManager {
 
         SubTask oldSub = subtasks.get(subTask.getId());
         subtasks.replace(subTask.getId(), subTask);
-
         Epic epic = epics.get(subTask.getEpicId());
-        ArrayList<SubTask> subtuskList = epic.getSubtuskList();
         ArrayList<Integer> subtuskIds = epic.getSubtuskIds();
-        subtuskList.remove(oldSub);
         subtuskIds.remove(oldSub.getId());
-        epic.setSubtuskList(subtuskList);
         epic.setSubtaskIds(subtuskIds);
         updateEpicStatus(epic);
         return subTask;
     }
 
-    public ArrayList<SubTask> printSubTasks () {
+    public ArrayList<SubTask> getSubTasks () {
          return new ArrayList<>(subtasks.values());
     }
 
-    public ArrayList<SubTask> printEpicSubtasks(Epic epic){
-        return epic.getSubtuskList();
+    public ArrayList<SubTask> getEpicSubtasks(Epic epic){
+         ArrayList<Integer> ids = epic.getSubtuskIds();
+         ArrayList<SubTask> subs = new ArrayList<>();
+         for (Integer id : ids){
+             subs.add(subtasks.get(id));
+         }
+        return subs;
+
     }
 
-    public ArrayList<Integer> printCountEpicSubtusk(Epic epic){
+    public ArrayList<Integer> getCountEpicSubtusk(Epic epic){
         return epic.getSubtuskIds();
     }
 
@@ -195,11 +163,8 @@ public class TaskManager {
         subtasks.remove(id);
 
         Epic epic = epics.get(epicID);
-        ArrayList<SubTask> subtuskList = epic.getSubtuskList();
         ArrayList<Integer> subtuskIds = epic.getSubtuskIds();
-        subtuskList.remove(subTask);
         subtuskIds.remove(id);
-        epic.setSubtuskList(subtuskList);
         epic.setSubtaskIds(subtuskIds);
         updateEpic(epic);
     }
@@ -207,22 +172,27 @@ public class TaskManager {
     //////////////////////////////////////////////////////////
 
     private void updateEpicStatus(Epic epic){
-        int DoneStatusCount = 0;
-        int NewStatusCount = 0;
-        ArrayList<SubTask> subtasks = epic.getSubtuskList();
+        int doneStatusCount = 0;
+        int newStatusCount = 0;
+        ArrayList<Integer> subtask = epic.getSubtuskIds();
+        ArrayList<SubTask> subb = new ArrayList<>();
 
-        for (SubTask subtask : subtasks){
-            if (subtask.getStatus() == TaskStatus.NEW){
-                NewStatusCount++;
+        for (Integer id : subtask) {
+            subb.add(subtasks.get(id));
+        }
+
+        for (SubTask subTask : subb){
+            if (subTask.getStatus() == TaskStatus.NEW){
+                newStatusCount++;
             }
-            if (subtask.getStatus() == TaskStatus.DONE){
-                DoneStatusCount++;
+            if (subTask.getStatus() == TaskStatus.DONE){
+                doneStatusCount++;
             }
         }
 
-        if(NewStatusCount == subtasks.size()){
+        if(newStatusCount == subtask.size()){
             epic.setStatus(TaskStatus.NEW);
-        } else if (DoneStatusCount == subtasks.size()) {
+        } else if (doneStatusCount == subtask.size()) {
             epic.setStatus(TaskStatus.DONE);
         } else {
             epic.setStatus(TaskStatus.IN_PROGRESS);
