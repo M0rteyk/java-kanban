@@ -1,6 +1,6 @@
-package TaskManager;
+package task;
 
-public class SubTask extends Task{
+public class SubTask extends Task {
 
     private final int epicId;
 

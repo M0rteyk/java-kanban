@@ -1,4 +1,5 @@
-package TaskManager;
+package task;
+
 import java.util.Objects;
 
 public class Task {
@@ -15,6 +16,17 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = TaskStatus.NEW;
+    }
+
+    private Task (Integer id, String name, String description, TaskStatus status){
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
+    }
+
+    public Task getSnapshot(){
+        return new Task(this.getId(), this.getName(), this.getDescription(), this.getStatus());
     }
 
     public int getId() {

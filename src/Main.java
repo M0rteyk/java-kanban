@@ -1,60 +1,74 @@
-import TaskManager.Task;
-import TaskManager.TaskManager;
-import TaskManager.TaskStatus;
-import TaskManager.Epic;
-import TaskManager.SubTask;
+import TaskManagers.HistoryManager;
+import TaskManagers.Managers;
+import TaskManagers.TaskManager;
+import task.Task;
+import TaskManagers.InMemoryTaskManager;
+import task.TaskStatus;
+import task.Epic;
+import task.SubTask;
 
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager manager = new TaskManager();
-
-        Task writeCode = new Task("Написать программу", "На JAVA");
-        writeCode = manager.createTask(writeCode);
-        System.out.println("__________");
-        System.out.println("Задача 'writeCode' была создана");
-        System.out.println(writeCode);
-
-        Task Review = new Task("Отправить на ревью", "Выгрузить код на GitHub");
-        Review = manager.createTask(Review);
-        System.out.println("Задача 'Review' была создана");
-        System.out.println(Review);
-
-        System.out.println("__________");
-
-        Epic codeStructure = new Epic("Определить структуру кода", "Понять задачи");
-        codeStructure = manager.createEpic(codeStructure);
-        System.out.println("Список подзадач 'codeStructure' был создан");
-        System.out.println(codeStructure);
-
-        SubTask mainTusk = new SubTask("Выделить основные задачи", "Прочитать ТЗ несколько раз", codeStructure.getId());
-        mainTusk = manager.createSubtusk(mainTusk);
-        System.out.println("Подзадача 'mainTusk' была создана");
-        System.out.println(mainTusk);
-
-        SubTask createClass = new SubTask("Создать классы", "Создать классы опираясь на ТЗ", codeStructure.getId());
-        createClass = manager.createSubtusk(createClass);
-        System.out.println("Подзадача 'createClass' была создана");
-        System.out.println(createClass);
-
-        System.out.println("__________");
-
-        Epic continueCode = new Epic("Наполнить код", "Дописать все необходимое для работы программы");
-        continueCode = manager.createEpic(continueCode);
-        System.out.println("Список подзадач 'continueCode' был создан");
-        System.out.println(continueCode);
-
-        SubTask createMetods = new SubTask("Написать конструкторы и методы", "Опираясь на ТЗ написать конструкторы и методы для корректной работы программы", continueCode.getId());
-        createMetods = manager.createSubtusk(createMetods);
-        System.out.println("Подзадача 'createMetods' была создана");
-        System.out.println(createMetods);
-
-        System.out.println("__________");
-
-        mainTusk.setStatus(TaskStatus.DONE);
-        System.out.println(manager.updateSubtask(mainTusk));
-        System.out.println(manager.updateEpic(codeStructure));
-        System.out.println(mainTusk);
-        System.out.println(manager.getEpicSubtasks(codeStructure));
+        TaskManager manager = Managers.getDefaultTaskManager();
+        HistoryManager historyManager = Managers.getDefaultHistoryManager();
+        createTasks(manager);
+        printAllTasks(manager);
     }
+
+    private static void createTasks(TaskManager manager) {
+            Task writeCode = new Task("Написать программу", "На JAVA");
+            manager.createTask(writeCode);
+
+
+
+
+            Task Review = new Task("Отправить на ревью", "Выгрузить код на GitHub");
+            manager.createTask(Review);
+
+
+            Epic codeStructure = new Epic("Определить структуру кода", "Понять задачи");
+             manager.createEpic(codeStructure);
+
+
+            SubTask mainTusk = new SubTask("Выделить основные задачи", "Прочитать ТЗ несколько раз", codeStructure.getId());
+            manager.createSubtusk(mainTusk);
+
+
+            SubTask createClass = new SubTask("Создать классы", "Создать классы опираясь на ТЗ", codeStructure.getId());
+            manager.createSubtusk(createClass);
+
+
+            Epic continueCode = new Epic("Наполнить код", "Дописать все необходимое для работы программы");
+            manager.createEpic(continueCode);
+
+
+            SubTask createMetods = new SubTask("Написать конструкторы и методы", "Опираясь на ТЗ написать конструкторы и методы для корректной работы программы", continueCode.getId());
+            manager.createSubtusk(createMetods);
+        }
+
+    private static void printAllTasks(TaskManager manager) {
+        System.out.println("Задачи:");
+        for (Task task : manager.getAllTasks()) {
+            System.out.println(task);
+        }
+        System.out.println("Эпики:");
+        for (Epic epic : manager.getAllEpics()) {
+            System.out.println(epic);
+
+            for (Task task : manager.getEpicSubtasks(epic)) {
+                System.out.println("--> " + task);
+            }
+        }
+        System.out.println("Подзадачи:");
+        for (Task subtask : manager.getSubTasks()) {
+            System.out.println(subtask);
+        }
+
+        System.out.println("История:");
+        for (Task task : manager.getHistory()) {
+            System.out.println(task);
+        }
+    }
+
 }
