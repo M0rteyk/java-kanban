@@ -8,6 +8,8 @@ import task.Task;
 import task.SubTask;
 import task.Epic;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -141,16 +143,26 @@ class InMemoryTaskManagerTest {
     public void deleteTaskByIdShouldReturnNullIfKeyIsMissing() {
         taskManager.createTask(new Task("task1", "task1 description"));
         taskManager.createTask(new Task("task2", "task2 description"));
-        assertNull(taskManager.deleteTaskById(2));
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+        taskManager.deleteTaskById(5);
+        String output = outputStream.toString().trim();
+        assertEquals("Задачи с таким ID нет", output);
+        System.setOut(System.out);
     }
 
     @Test
     public void deleteEpicByIdShouldReturnNullIfKeyIsMissing() {
         taskManager.createEpic(new Epic("epic1", "epic1 description"));
-        assertNull(taskManager.deleteEpicById(1));
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+        taskManager.deleteEpicById(5);
+        String output = outputStream.toString().trim();
+        assertEquals("Эпика с таким ID нет", output);
+        System.setOut(System.out);
     }
 
-    @Test
+     @Test
     public void deleteSubtaskByIdShouldReturnNullIfKeyIsMissing() {
         Epic epic1 = new Epic("epic1", "epic1 description");
         taskManager.createEpic(epic1);
@@ -160,7 +172,12 @@ class InMemoryTaskManagerTest {
                 "subtask2 description", epic1.getId()));
         taskManager.createSubtusk(new SubTask("subtask3",
                 "subtask3 description", epic1.getId()));
-        assertNull(taskManager.clearSubtusksById(2));
+         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+         System.setOut(new PrintStream(outputStream));
+         taskManager.clearSubtusksById(11);
+         String output = outputStream.toString().trim();
+         assertEquals("Подзадачи с таким ID нет", output);
+         System.setOut(System.out);
     }
 
 

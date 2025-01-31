@@ -11,7 +11,6 @@ public class Main {
 
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefaultTaskManager();
-        HistoryManager historyManager = Managers.getDefaultHistoryManager();
         createTasks(manager);
         printAllTasks(manager);
     }
