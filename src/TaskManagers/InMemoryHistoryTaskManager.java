@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+
 public class InMemoryHistoryTaskManager implements HistoryManager{
 
+    int  MAX_SIZE = 10;
     public final List<Task> historyStorage = new ArrayList<>();
 
     @Override
