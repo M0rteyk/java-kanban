@@ -8,6 +8,12 @@ import java.util.List;
 
 public interface TaskManager {
 
+    /*
+     *Работа с задачами(Task)
+     * Тело методов создания, обновления, поиска и тд.
+     */
+
+
     public Task createTask(Task task);
 
     public Task updateTask(Task task);
@@ -20,7 +26,10 @@ public interface TaskManager {
 
     public void deleteTaskById(int id);
 
-    ////////////////////////////////////////////
+    /*
+     *Работа с эпиками(Epic)
+     * Тело методов создания, обновления, поиска и тд.
+     */
 
     public Epic createEpic(Epic epic);
 
@@ -34,7 +43,10 @@ public interface TaskManager {
 
     public void deleteEpicById(int id);
 
-    //////////////////////////////////////////////
+    /*
+     *Работа с подзадачами(SubTask)
+     * Тело методов создания, обновления, поиска и тд.
+     */
 
     public SubTask createSubtusk(SubTask subTask);
 
