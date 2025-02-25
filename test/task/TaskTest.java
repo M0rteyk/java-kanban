@@ -1,12 +1,12 @@
 package task;
 
-import TaskManagers.TaskManager;
+import taskManagers.TaskManager;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
-import TaskManagers.InMemoryTaskManager;
+import taskManagers.InMemoryTaskManager;
 
 class TaskTest {
 

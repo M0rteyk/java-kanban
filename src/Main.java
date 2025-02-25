@@ -1,13 +1,8 @@
-import TaskManagers.HistoryManager;
-import TaskManagers.Managers;
-import TaskManagers.TaskManager;
+import taskManagers.Managers;
+import taskManagers.TaskManager;
 import task.Task;
-import TaskManagers.InMemoryTaskManager;
-import task.TaskStatus;
 import task.Epic;
 import task.SubTask;
-
-import java.util.List;
 
 public class Main {
 
