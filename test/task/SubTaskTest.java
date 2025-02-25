@@ -3,8 +3,8 @@ package task;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
-import taskManagers.InMemoryTaskManager;
-import taskManagers.TaskManager;
+import taskmanagers.InMemoryTaskManager;
+import taskmanagers.TaskManager;
 
 
 class SubTaskTest {
