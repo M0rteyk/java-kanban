@@ -8,82 +8,82 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class InMemoryHistoryTaskManager implements HistoryManager{
+public class InMemoryHistoryTaskManager implements HistoryManager {
 
-  private static class CutomList {
+    private static class CutomList {
 
-      private final HashMap<Integer, Node> nodeMap = new HashMap<>();
-      private Node head;
-      private Node tail;
+        private final HashMap<Integer, Node> nodeMap = new HashMap<>();
+        private Node head;
+        private Node tail;
 
-      private void linkLast(Task task) {
-          Node node = new Node();
-          node.setTask(task);
+        private void linkLast(Task task) {
+            Node node = new Node();
+            node.setTask(task);
 
-          if(nodeMap.containsKey(task.getId())){
-              removeNode(nodeMap.get(task.getId()));
-          }
+            if (nodeMap.containsKey(task.getId())) {
+                removeNode(nodeMap.get(task.getId()));
+            }
 
-          if (head == null) {
-              tail = node;
-              head = node;
-              node.setNext(null);
-              node.setPrev(null);
-          } else {
-              node.setPrev(tail);
-              node.setNext(null);
-              tail.setNext(node);
-              tail = node;
-          }
+            if (head == null) {
+                tail = node;
+                head = node;
+                node.setNext(null);
+                node.setPrev(null);
+            } else {
+                node.setPrev(tail);
+                node.setNext(null);
+                tail.setNext(node);
+                tail = node;
+            }
 
-          nodeMap.put(task.getId(), node);
-      }
+            nodeMap.put(task.getId(), node);
+        }
 
-      private List<Task> getTasks (){
-          List<Task> result = new ArrayList<>();
-          Node node = head;
-          while (Objects.nonNull(node)){
-              result.add(node.getTask());
-              node = node.next;
-          }
-          return result;
-      }
+        private List<Task> getTasks() {
+            List<Task> result = new ArrayList<>();
+            Node node = head;
+            while (Objects.nonNull(node)) {
+                result.add(node.getTask());
+                node = node.next;
+            }
+            return result;
+        }
 
 
-      private void removeNode(Node node) {
-          if (node != null) {
-              nodeMap.remove(node.getTask().getId());
-              Node prev = node.getPrev();
-              Node next = node.getNext();
+        private void removeNode(Node node) {
+            if (node != null) {
+                nodeMap.remove(node.getTask().getId());
+                Node prev = node.getPrev();
+                Node next = node.getNext();
 
-              if (head == node) {
-                  head = node.getNext();
-              }
-              if (tail == node) {
-                  tail = node.getPrev();
-              }
+                if (head == node) {
+                    head = node.getNext();
+                }
+                if (tail == node) {
+                    tail = node.getPrev();
+                }
 
-              if (prev != null) {
-                  prev.setNext(next);
-              }
+                if (prev != null) {
+                    prev.setNext(next);
+                }
 
-              if (next != null) {
-                  next.setPrev(prev);
-              }
-          }
+                if (next != null) {
+                    next.setPrev(prev);
+                }
+            }
 
-      }
+        }
 
-      private Node getNode(int id) {
-          return nodeMap.get(id);
-      }
-  }
+        private Node getNode(int id) {
+            return nodeMap.get(id);
+        }
+    }
 
-  CutomList cutomList = new CutomList();
+    CutomList cutomList = new CutomList();
 
     @Override
-     public void addTask(Task task) {
-      cutomList.linkLast(task);
+    public void addTask(Task task) {
+        cutomList.linkLast(task);
     }
 
     @Override
@@ -98,7 +98,7 @@ public class InMemoryHistoryTaskManager implements HistoryManager{
     }
 
 
-    public static class Node{
+    public static class Node {
 
         Task task;
         Node next;

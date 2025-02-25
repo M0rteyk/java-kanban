@@ -21,7 +21,6 @@ class InMemoryHistoryManagerTest {
     }
 
 
-
     @Test
     public void getHistoryShouldReturnOldTaskAfterUpdate() {
         Task task1 = new Task("task1", "task1 description");
@@ -68,7 +67,7 @@ class InMemoryHistoryManagerTest {
                 epic1.getId());
         taskManager.createSubtusk(subtask3);
         taskManager.findSubtaskByID(subtask3.getId());
-        Task oldSubtask = new SubTask(subtask3.getName(), subtask3.getDescription(),  subtask3.getEpicId());
+        Task oldSubtask = new SubTask(subtask3.getName(), subtask3.getDescription(), subtask3.getEpicId());
         subtask3.setName("subtask2");
         subtask3.setDescription("subtask2 description");
         subtask3.setStatus(TaskStatus.IN_PROGRESS);

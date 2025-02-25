@@ -162,7 +162,7 @@ class InMemoryTaskManagerTest {
         System.setOut(System.out);
     }
 
-     @Test
+    @Test
     public void deleteSubtaskByIdShouldReturnNullIfKeyIsMissing() {
         Epic epic1 = new Epic("epic1", "epic1 description");
         taskManager.createEpic(epic1);
@@ -172,12 +172,12 @@ class InMemoryTaskManagerTest {
                 "subtask2 description", epic1.getId()));
         taskManager.createSubtusk(new SubTask("subtask3",
                 "subtask3 description", epic1.getId()));
-         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-         System.setOut(new PrintStream(outputStream));
-         taskManager.clearSubtusksById(11);
-         String output = outputStream.toString().trim();
-         assertEquals("Подзадачи с таким ID нет", output);
-         System.setOut(System.out);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+        taskManager.clearSubtusksById(11);
+        String output = outputStream.toString().trim();
+        assertEquals("Подзадачи с таким ID нет", output);
+        System.setOut(System.out);
     }
 
 
