@@ -19,8 +19,8 @@ public class Main {
         manager.createTask(writeCode);
 
 
-        Task Review = new Task("Отправить на ревью", "Выгрузить код на GitHub");
-        manager.createTask(Review);
+        Task review = new Task("Отправить на ревью", "Выгрузить код на GitHub");
+        manager.createTask(review);
 
 
         Epic codeStructure = new Epic("Определить структуру кода", "Понять задачи");
