@@ -7,19 +7,33 @@ import task.TaskStatus;
 import task.Epic;
 import task.SubTask;
 
+import java.util.List;
+
 public class Main {
 
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefaultTaskManager();
-        createTasks(manager);
-        printAllTasks(manager);
+       // createTasks(manager);
+       // printAllTasks(manager);
+
+
+
+        Epic epic1 = new Epic("epic1", "epic1 description");
+        manager.createEpic(epic1);
+        SubTask subtask3 = new SubTask("subtask1", "subtask1 description",
+                epic1.getId());
+        manager.createSubtusk(subtask3);
+        System.out.println(manager.findSubtaskByID(subtask3.getId()));
+        subtask3.setName("subtask2");
+        subtask3.setDescription("subtask2 description");
+        subtask3.setStatus(TaskStatus.IN_PROGRESS);
+        System.out.println(manager.updateSubtask(subtask3));
+        System.out.println(manager.getHistory());
     }
 
     private static void createTasks(TaskManager manager) {
             Task writeCode = new Task("Написать программу", "На JAVA");
             manager.createTask(writeCode);
-
-
 
 
             Task Review = new Task("Отправить на ревью", "Выгрузить код на GitHub");
