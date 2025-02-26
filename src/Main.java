@@ -10,6 +10,12 @@ public class Main {
         TaskManager manager = Managers.getDefaultTaskManager();
         createTasks(manager);
         printAllTasks(manager);
+        manager.findTaskById(1);
+        manager.findTaskById(2);
+        manager.findEpicById(3);
+        manager.findTaskById(1);
+        manager.findEpicById(3);
+        System.out.println(manager.getHistory());
 
 
     }

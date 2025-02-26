@@ -10,6 +10,10 @@ import java.util.Objects;
 
 public class InMemoryHistoryTaskManager implements HistoryManager {
 
+    /*
+     *Класс CutomList и работа со списком для истории поиска
+     */
+
     private static class CutomList {
 
         private final HashMap<Integer, Node> nodeMap = new HashMap<>();
@@ -79,30 +83,46 @@ public class InMemoryHistoryTaskManager implements HistoryManager {
         }
     }
 
-    CutomList cutomList = new CutomList();
+    /*
+     *Экземпляр класса CutomList
+     */
+    private final CutomList cutomList = new CutomList();
 
+    /*
+     *Метод добавления задачи после ее поиска
+     */
     @Override
     public void addTask(Task task) {
         cutomList.linkLast(task);
     }
 
+    /*
+     *Метод удаления дубликата задачи
+     */
     @Override
     public void remove(int id) {
         cutomList.removeNode(cutomList.getNode(id));
     }
 
+    /*
+     *Вызов истории поиска
+     */
     @Override
     public List<Task> getHistory() {
         return cutomList.getTasks();
 
     }
 
+    /*
+     *Класс Node(узел), содержит в себе ссылки на следующий и предыдущий элементы,
+     * а также само значение(task)
+     */
 
     public static class Node {
 
-        Task task;
-        Node next;
-        Node prev;
+        private Task task;
+        private Node next;
+        private Node prev;
 
         public Task getTask() {
             return task;
