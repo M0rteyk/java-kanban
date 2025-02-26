@@ -1,9 +1,10 @@
 package task;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
-import TaskManagers.InMemoryTaskManager;
-import TaskManagers.TaskManager;
+import taskmanagers.InMemoryTaskManager;
+import taskmanagers.TaskManager;
 
 
 class EpicTest {
@@ -11,7 +12,7 @@ class EpicTest {
     @Test
     public void EpicsWithEqualIdShouldBeEqual() {
         TaskManager manager = new InMemoryTaskManager();
-        Epic epic1 = new Epic( "epic1", "description1");
+        Epic epic1 = new Epic("epic1", "description1");
         epic1.setDescription("description2");
         Epic epic2 = manager.updateEpic(epic1);
         assertEquals(epic1, epic2,
