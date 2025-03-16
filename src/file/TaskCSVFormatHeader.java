@@ -11,6 +11,7 @@ public class TaskCSVFormatHeader {
     public static String getHeader() {
         return "id,type,name,status,description,epic\n";
     }
+
     // Метод сохранения задачи в строку
     public static String toString(Task task) {
         String[] toJoin = {Integer.toString(task.getId()), task.getType().toString(), task.getName(),
@@ -18,6 +19,7 @@ public class TaskCSVFormatHeader {
         return String.join(",", toJoin);
 
     }
+
     // Метод создания задачи из строки
     public static Task fromString(String value) {
         String[] params = value.split(",");
