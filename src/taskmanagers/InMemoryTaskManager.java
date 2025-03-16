@@ -237,6 +237,18 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
+    public HistoryManager getHistoryManager() {
+        return historyManager;
+    }
+    public void addToHistory(int id) {
+        if (epics.containsKey(id)) {
+            historyManager.addTask(epics.get(id));
+        } else if (subtasks.containsKey(id)) {
+            historyManager.addTask(subtasks.get(id));
+        } else if (tasks.containsKey(id)) {
+            historyManager.addTask(tasks.get(id));
+        }
+    }
     private void updateEpicStatus(Epic epic) {
         int doneStatusCount = 0;
         int newStatusCount = 0;

@@ -1,21 +1,40 @@
 import taskmanagers.Managers;
 import taskmanagers.TaskManager;
+import taskmanagers.FileBackedTaskManager;
 import task.Task;
 import task.Epic;
 import task.SubTask;
 
+
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager manager = Managers.getDefaultTaskManager();
+        Path path = Path.of("data.csv");
+        File file = new File(String.valueOf(path));
+        TaskManager manager = Managers.getDefaultTaskManager(file);
         createTasks(manager);
+        //System.out.println(manager.findTaskById(1));
+        // manager.findTaskById(2);
+        // manager.findEpicById(3);
         printAllTasks(manager);
-        manager.findTaskById(1);
-        manager.findTaskById(2);
-        manager.findEpicById(3);
-        manager.findTaskById(1);
-        manager.findEpicById(3);
-        System.out.println(manager.getHistory());
+        openFile(file);
+
+
+        //System.out.println(manager.getAllEpics());
+        // manager.findTaskById(1);
+        // manager.findTaskById(2);
+        // manager.findEpicById(3);
+        // manager.findTaskById(1);
+        // manager.findEpicById(3);
+        //System.out.println(manager.getHistory());
+        // FileBackedTaskManager ff = new FileBackedTaskManager(file);
+        ////  ff.loadFromFile(file);
+        // System.out.println(ff.getAllEpics());
 
 
     }
@@ -72,5 +91,20 @@ public class Main {
             System.out.println(task);
         }
     }
+
+    private static void openFile(File file) {
+        if (file.exists()) {
+            try {
+                // Используем Desktop для открытия файла
+                Desktop desktop = Desktop.getDesktop();
+                desktop.open(file); // Открытие файла с помощью ассоциированного приложения
+            } catch (IOException e) {
+                System.out.println("Ошибка при открытии файла: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Файл не найден: " + file.getAbsolutePath());
+        }
+    }
+
 
 }

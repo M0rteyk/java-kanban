@@ -17,16 +17,12 @@ public class Task {
         this.status = TaskStatus.NEW;
     }
 
-    private Task(Integer id, String name, String description, TaskStatus status) {
-        this.id = id;
+    public Task(String name, String description, TaskStatus status) {
         this.name = name;
         this.description = description;
         this.status = status;
     }
 
-    public Task getSnapshot() {
-        return new Task(this.getId(), this.getName(), this.getDescription(), this.getStatus());
-    }
 
     public int getId() {
         return id;
@@ -58,6 +54,10 @@ public class Task {
 
     public void setStatus(TaskStatus status) {
         this.status = status;
+    }
+
+    public TaskType getType() {
+        return TaskType.TASK;
     }
 
     @Override

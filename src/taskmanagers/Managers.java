@@ -1,5 +1,7 @@
 package taskmanagers;
 
+import java.io.File;
+
 public class Managers {
 
     /*
@@ -16,6 +18,12 @@ public class Managers {
 
     public static TaskManager getDefaultTaskManager() {
         return new InMemoryTaskManager();
+    }
+
+    public static TaskManager getDefaultTaskManager(File file) {
+        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
+        fileBackedTaskManager.loadFromFile(file);
+        return fileBackedTaskManager;
     }
 
 
