@@ -240,6 +240,7 @@ public class InMemoryTaskManager implements TaskManager {
     public HistoryManager getHistoryManager() {
         return historyManager;
     }
+
     public void addToHistory(int id) {
         if (epics.containsKey(id)) {
             historyManager.addTask(epics.get(id));
@@ -249,6 +250,7 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.addTask(tasks.get(id));
         }
     }
+
     private void updateEpicStatus(Epic epic) {
         int doneStatusCount = 0;
         int newStatusCount = 0;
