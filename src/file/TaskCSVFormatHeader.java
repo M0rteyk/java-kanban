@@ -24,17 +24,17 @@ public class TaskCSVFormatHeader {
     public static Task fromString(String value) {
         String[] params = value.split(",");
         if (params[1].equals("EPIC")) {
-            Epic epic = new Epic(params[4], params[2], TaskStatus.valueOf(params[3].toUpperCase()));
+            Epic epic = new Epic(params[2], params[4], TaskStatus.valueOf(params[3].toUpperCase()));
             epic.setId(Integer.parseInt(params[0]));
             epic.setStatus(TaskStatus.valueOf(params[3].toUpperCase()));
             return epic;
         } else if (params[1].equals("SUBTASK")) {
-            SubTask subtask = new SubTask(params[4], params[2], TaskStatus.valueOf(params[3].toUpperCase()),
+            SubTask subtask = new SubTask(params[2], params[4], TaskStatus.valueOf(params[3].toUpperCase()),
                     Integer.parseInt(params[5]));
             subtask.setId(Integer.parseInt(params[0]));
             return subtask;
         } else {
-            Task task = new Task(params[4], params[2], TaskStatus.valueOf(params[3].toUpperCase()));
+            Task task = new Task(params[2], params[4], TaskStatus.valueOf(params[3].toUpperCase()));
             task.setId(Integer.parseInt(params[0]));
             return task;
         }

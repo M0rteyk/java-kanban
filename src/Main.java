@@ -12,27 +12,11 @@ import java.nio.file.Path;
 public class Main {
 
     public static void main(String[] args) {
-        Path path = Path.of("data.csv");
-        File file = new File(String.valueOf(path));
+        Path path = Path.of("src/resourses/data.csv");
+        File file = path.toFile();
         TaskManager manager = Managers.getDefaultTaskManager(file);
-        createTasks(manager);
-        //System.out.println(manager.findTaskById(1));
-        // manager.findTaskById(2);
-        // manager.findEpicById(3);
         printAllTasks(manager);
         openFile(file);
-
-
-        //System.out.println(manager.getAllEpics());
-        // manager.findTaskById(1);
-        // manager.findTaskById(2);
-        // manager.findEpicById(3);
-        // manager.findTaskById(1);
-        // manager.findEpicById(3);
-        //System.out.println(manager.getHistory());
-        // FileBackedTaskManager ff = new FileBackedTaskManager(file);
-        ////  ff.loadFromFile(file);
-        // System.out.println(ff.getAllEpics());
 
 
     }

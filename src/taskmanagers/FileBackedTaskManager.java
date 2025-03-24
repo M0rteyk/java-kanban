@@ -9,6 +9,7 @@ import task.Task;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private File file;
+    private static boolean isLoading = false; // переменная для вызова метода saveFile()
 
 
     public FileBackedTaskManager(File file) {
@@ -24,16 +26,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     // Метод сохранения данных в файл
     public void saveFile() {
-        try {
-            if (Files.exists(file.toPath())) {
-                Files.delete(file.toPath());
-            }
-            Files.createFile(file.toPath());
-        } catch (IOException e) {
-            throw new ManagerSaveException("Не удалось найти файл для записи данных");
-        }
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+
+        try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8,
+                StandardOpenOption.CREATE,
+                StandardOpenOption.TRUNCATE_EXISTING)) {
             writer.write(TaskCSVFormatHeader.getHeader());
 
 
@@ -57,8 +54,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     // метод загрузки данных из файла при запуске программы
-    public FileBackedTaskManager loadFromFile(File file) {
+    public static FileBackedTaskManager loadFromFile(File file) {
+        isLoading = true;
         final FileBackedTaskManager result = new FileBackedTaskManager(file);
+        int maxId = 0; // Переменная для восстановления последнего ID
+
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
             String line = bufferedReader.readLine();
             while (bufferedReader.ready()) {
@@ -68,95 +68,55 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
 
                 Task task = TaskCSVFormatHeader.fromString(line);
+                maxId = Math.max(maxId, task.getId());
 
                 if (task instanceof Epic epic) {
-                    addEpic(epic);
+                    result.createEpic(epic);
                 } else if (task instanceof SubTask subtask) {
-                    addSubtask(subtask);
+                    result.createSubtusk(subtask);
                 } else {
-                    addTask(task);
+                    result.createTask(task);
                 }
             }
 
             String lineWithHistory = bufferedReader.readLine();
             for (int id : historyFromString(lineWithHistory)) {
-                addToHistory(id);
+                result.addToHistory(id);
             }
         } catch (IOException e) {
             throw new ManagerSaveException("Не удалось считать данные из файла.");
+        } finally {
+            isLoading = false;
         }
 
+        result.genId = maxId; // Восстановить последний ID
         return result;
-    }
-
-    // Метод для сохранения истории в CSV
-    static String historyToString(HistoryManager manager) {
-        List<Task> history = manager.getHistory();
-        StringBuilder str = new StringBuilder();
-
-        if (history.isEmpty()) {
-            return "";
-        }
-
-        for (Task task : history) {
-            str.append(task.getId()).append(",");
-        }
-
-        if (str.length() != 0) {
-            str.deleteCharAt(str.length() - 1);
-        }
-
-        return str.toString();
-    }
-
-    // Метод восстановления менеджера истории из CSV
-    static List<Integer> historyFromString(String value) {
-        List<Integer> toReturn = new ArrayList<>();
-        if (value != null) {
-            String[] id = value.split(",");
-
-            for (String number : id) {
-                toReturn.add(Integer.parseInt(number));
-            }
-
-            return toReturn;
-        }
-        return toReturn;
-    }
-
-    public Task addTask(Task task) {
-        return super.createTask(task);
-
-    }
-
-    public Epic addEpic(Epic epic) {
-
-        return super.createEpic(epic);
-    }
-
-    public SubTask addSubtask(SubTask subtask) {
-
-        return super.createSubtusk(subtask);
     }
 
     @Override
     public Task createTask(Task task) {
         Task innerTask = super.createTask(task);
-        saveFile();
+        if (!isLoading) {
+            saveFile();
+        }
         return innerTask;
     }
 
     @Override
     public Task updateTask(Task task) {
         Task innerTask = super.updateTask(task);
+
         saveFile();
+
         return innerTask;
     }
 
     @Override
     public Task findTaskById(int id) {
         Task innerTask = super.findTaskById(id);
+
         saveFile();
+
         return innerTask;
     }
 
@@ -175,7 +135,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public Epic createEpic(Epic epic) {
         Epic innerEpic = super.createEpic(epic);
-        saveFile();
+        if (!isLoading) {
+            saveFile();
+        }
         return innerEpic;
     }
 
@@ -208,7 +170,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public SubTask createSubtusk(SubTask subTask) {
         SubTask innerSubtask = super.createSubtusk(subTask);
-        saveFile();
+        if (!isLoading) {
+            saveFile();
+        }
         return innerSubtask;
     }
 
@@ -236,6 +200,41 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public void clearSubtusksById(int id) {
         super.clearSubtusksById(id);
         saveFile();
+    }
+
+    // Метод для сохранения истории в CSV
+    private static String historyToString(HistoryManager manager) {
+        List<Task> history = manager.getHistory();
+        StringBuilder str = new StringBuilder();
+
+        if (history.isEmpty()) {
+            return "";
+        }
+
+        for (Task task : history) {
+            str.append(task.getId()).append(",");
+        }
+
+        if (str.length() != 0) {
+            str.deleteCharAt(str.length() - 1);
+        }
+
+        return str.toString();
+    }
+
+    // Метод восстановления менеджера истории из CSV
+    private static List<Integer> historyFromString(String value) {
+        List<Integer> toReturn = new ArrayList<>();
+        if (value != null) {
+            String[] id = value.split(",");
+
+            for (String number : id) {
+                toReturn.add(Integer.parseInt(number));
+            }
+
+            return toReturn;
+        }
+        return toReturn;
     }
 
 }
