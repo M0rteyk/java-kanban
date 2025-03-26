@@ -1,19 +1,19 @@
 package task;
 
-import TaskManagers.TaskManager;
+import taskmanagers.TaskManager;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
-import TaskManagers.InMemoryTaskManager;
+import taskmanagers.InMemoryTaskManager;
 
 class TaskTest {
 
     @Test
     public void tasksWithEqualIdShouldBeEqual() {
         TaskManager manager = new InMemoryTaskManager();
-        Task task1 = new Task( "Task1", "description1");
+        Task task1 = new Task("Task1", "description1");
         task1.setStatus(TaskStatus.IN_PROGRESS);
         task1.setName("task2");
         Task task2 = manager.updateTask(task1);
