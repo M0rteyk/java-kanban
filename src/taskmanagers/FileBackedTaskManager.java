@@ -17,7 +17,6 @@ import java.util.List;
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private File file;
-    private static boolean isLoading = false; // переменная для вызова метода saveFile()
 
 
     public FileBackedTaskManager(File file) {
@@ -55,7 +54,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     // метод загрузки данных из файла при запуске программы
     public static FileBackedTaskManager loadFromFile(File file) {
-        isLoading = true;
+
         final FileBackedTaskManager result = new FileBackedTaskManager(file);
         int maxId = 0; // Переменная для восстановления последнего ID
 
@@ -85,8 +84,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
         } catch (IOException e) {
             throw new ManagerSaveException("Не удалось считать данные из файла.");
-        } finally {
-            isLoading = false;
         }
 
         result.genId = maxId; // Восстановить последний ID
@@ -96,9 +93,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public Task createTask(Task task) {
         Task innerTask = super.createTask(task);
-        if (!isLoading) {
-            saveFile();
-        }
+        saveFile();
         return innerTask;
     }
 
@@ -135,9 +130,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public Epic createEpic(Epic epic) {
         Epic innerEpic = super.createEpic(epic);
-        if (!isLoading) {
-            saveFile();
-        }
+        saveFile();
         return innerEpic;
     }
 
@@ -170,9 +163,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public SubTask createSubtusk(SubTask subTask) {
         SubTask innerSubtask = super.createSubtusk(subTask);
-        if (!isLoading) {
-            saveFile();
-        }
+        saveFile();
         return innerSubtask;
     }
 
