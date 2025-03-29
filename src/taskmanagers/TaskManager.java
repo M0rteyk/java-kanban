@@ -1,4 +1,4 @@
-package TaskManagers;
+package taskmanagers;
 
 import task.Epic;
 import task.SubTask;
@@ -65,6 +65,11 @@ public interface TaskManager {
     public void clearSubtusksById(int id);
 
     public List<Task> getHistory();
+
+    public List<Task> getPrioritizedTasks();
+
+    public List<String> findTimeConflicts();
+
 }
 
 
