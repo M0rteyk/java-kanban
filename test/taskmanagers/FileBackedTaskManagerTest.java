@@ -1,72 +1,56 @@
 package taskmanagers;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 import task.Epic;
 import task.SubTask;
 import task.Task;
-import task.TaskStatus;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
-public class FileBackedTaskManagerTest {
+import static org.junit.jupiter.api.Assertions.*;
 
-    private File file;
-    private FileBackedTaskManager taskManager;
+class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
+    private File tempFile;
+    private static final LocalDateTime TEST_TIME = LocalDateTime.of(2025, 3, 29, 13, 46);
 
-    @BeforeEach
-    public void setUp() throws IOException {
-        file = new File("testFile.csv");
-        if (file.exists()) {
-            file.delete();
+    @Override
+    protected FileBackedTaskManager createTaskManager() {
+        try {
+            tempFile = Files.createTempFile("tasks", ".csv").toFile();
+            return new FileBackedTaskManager(tempFile);
+        } catch (IOException e) {
+            throw new RuntimeException("Не удалось создать временный файл", e);
         }
-        taskManager = new FileBackedTaskManager(file);
     }
-
 
     @Test
     public void testSaveAndLoadFromFile() {
-        Task task = new Task("Test Task", "Test description", TaskStatus.NEW);
+
+        Task task = new Task("Test Task", "Description", TEST_TIME, Duration.ofHours(1));
         taskManager.createTask(task);
 
+        Epic epic = new Epic("Test Epic", "Description");
+        taskManager.createEpic(epic);
 
-        taskManager.saveFile();
+        SubTask subTask = new SubTask("Test SubTask", "Description",
+                TEST_TIME, Duration.ofMinutes(30), epic.getId());
+        taskManager.createSubtusk(subTask);
 
+        // Загружаем из файла
+        FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
 
-        FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(file);
-
+        // Проверяем задачи
         Task loadedTask = loadedManager.findTaskById(task.getId());
+        assertEquals(task.getName(), loadedTask.getName());
+        assertEquals(task.getStartTime(), loadedTask.getStartTime());
 
-        assertNotNull(loadedTask, "Задача должна быть загружена из файла");
-        assertEquals(task.getName(), loadedTask.getName(), "Имя задачи должно совпадать");
-        assertEquals(task.getDescription(), loadedTask.getDescription(), "Описание задачи должно совпадать");
-        assertEquals(task.getStatus(), loadedTask.getStatus(), "Статус задачи должен совпадать");
+        // Проверяем подзадачи
+        SubTask loadedSubTask = loadedManager.findSubtaskByID(subTask.getId());
+        assertEquals(subTask.getEpicId(), loadedSubTask.getEpicId());
+        assertEquals(subTask.getStartTime(), loadedSubTask.getStartTime());
     }
-
-    @Test
-    public void testHistorySaving() {
-        Task task1 = new Task("Task 1", "Description 1", TaskStatus.NEW);
-        Task task2 = new Task("Task 2", "Description 2", TaskStatus.NEW);
-
-        taskManager.createTask(task1);
-        taskManager.createTask(task2);
-
-        taskManager.addToHistory(task1.getId());
-        taskManager.addToHistory(task2.getId());
-
-
-        taskManager.saveFile();
-
-
-        FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(file);
-
-
-        assertTrue(loadedManager.getHistoryManager().getHistory().contains(task1), "История должна содержать Task 1");
-        assertTrue(loadedManager.getHistoryManager().getHistory().contains(task2), "История должна содержать Task 2");
-    }
-
 }

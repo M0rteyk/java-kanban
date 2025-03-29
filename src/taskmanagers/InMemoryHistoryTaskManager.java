@@ -2,10 +2,9 @@ package taskmanagers;
 
 import task.Task;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 
 public class InMemoryHistoryTaskManager implements HistoryManager {
@@ -44,15 +43,14 @@ public class InMemoryHistoryTaskManager implements HistoryManager {
         }
 
         private List<Task> getTasks() {
-            List<Task> result = new ArrayList<>();
-            Node node = head;
-            while (Objects.nonNull(node)) {
-                result.add(node.getTask());
-                node = node.next;
-            }
-            return result;
+            return nodes()
+                    .map(Node::getTask)
+                    .collect(Collectors.toList());
         }
 
+        private Stream<Node> nodes() {
+            return Stream.iterate(head, Objects::nonNull, Node::getNext);
+        }
 
         private void removeNode(Node node) {
             if (node != null) {
@@ -75,7 +73,6 @@ public class InMemoryHistoryTaskManager implements HistoryManager {
                     next.setPrev(prev);
                 }
             }
-
         }
 
         private Node getNode(int id) {
