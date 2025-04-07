@@ -1,3 +1,4 @@
+import http.HttpTaskServer;
 import taskmanagers.Managers;
 import taskmanagers.TaskManager;
 import task.Task;
@@ -17,8 +18,19 @@ public class Main {
         Path path = Path.of("src/resourses/data.csv");
         File file = path.toFile();
         TaskManager manager = Managers.getDefaultTaskManager(file);
-        printAllTasks(manager);
+        //printAllTasks(manager);
         openFile(file);
+
+        try {
+            HttpTaskServer server = new HttpTaskServer();
+            server.start();
+
+            // Обработчик завершения работы
+            Runtime.getRuntime().addShutdownHook(new Thread(server::stop));
+
+        } catch (IOException e) {
+            System.err.println("Не удалось запустить сервер: " + e.getMessage());
+        }
     }
 
     private static void createTasks(TaskManager manager) {

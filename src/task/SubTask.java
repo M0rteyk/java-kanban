@@ -9,6 +9,8 @@ public class SubTask extends Task {
 
     private int epicId;
 
+    public SubTask() {
+    }
 
     public SubTask(String name, String description, LocalDateTime startTime, Duration duration, int epicId) {
         super(name, description, startTime, duration);
