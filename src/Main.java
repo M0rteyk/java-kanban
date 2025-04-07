@@ -18,7 +18,7 @@ public class Main {
         Path path = Path.of("src/resourses/data.csv");
         File file = path.toFile();
         TaskManager manager = Managers.getDefaultTaskManager(file);
-        //printAllTasks(manager);
+        printAllTasks(manager);
         openFile(file);
 
         try {
